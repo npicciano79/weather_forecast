@@ -1,14 +1,15 @@
 #call weather api and return forcast 
 #https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={API key}
 
-from ast import parse
-import imp
+from argparse import Namespace
+from types import SimpleNamespace
 from urllib import request, response
 import requests
 import urllib.parse
 import time
 import datetime
 from datetime import date
+import json
 
 #get lattitude and longitude from town/city
 def getLocation():
@@ -29,22 +30,21 @@ def getDateTime():
     return unix_datetime
 
 def callWeather(loc_info,unix_datetime,key):
-    #print(loc_info[0])
-
     api_add='https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}'.format(loc_info[0],loc_info[1],key)
     raw_data = requests.get(api_add).json()
-    #print(response)
-
     return raw_data
     
-    #{'coord': {'lon': -81.3145, 'lat': 29.8947}, 'weather': [{'id': 802, 'main': 'Clouds', 'description': 'scattered clouds', 'icon': '03d'}], 'base': 'stations', 'main': {'temp': 297.56, 'feels_like': 298.25, 'temp_min': 295.93, 'temp_max': 299.31, 'pressure': 1013, 'humidity': 84}, 'visibility': 10000, 'wind': {'speed': 5.66, 'deg': 160}, 'clouds': {'all': 40}, 'dt': 1648070303, 'sys': {'type': 1, 'id': 5825, 'country': 'US', 'sunrise': 1648034725, 'sunset': 1648078686}, 'timezone': -14400, 'id': 4170894, 'name': 'Saint Augustine', 'cod': 200}
 
 #need to parse data and display correctly 
 def displayData(raw_data):
+    value = Namespace(**raw_data)
+    print(value.weather)
 
-    weather_data=[]
-    for data in raw_data:
-        print(data[0])
+    
+
+        
+
+    
 
 
 
