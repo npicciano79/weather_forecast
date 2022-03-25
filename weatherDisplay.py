@@ -37,11 +37,19 @@ def callWeather(loc_info,unix_datetime,key):
 
 #need to parse data and display correctly 
 def displayData(raw_data):
-    value = Namespace(**raw_data)
-    print(value.weather)
-
+    data_request=['weather','main']
+    data_get=[]
+    #value = Namespace(**raw_data)
+    for key,value in raw_data.items():
+        if key in data_request:
+            input(raw_data[key])
+            
+    
     
 
+
+    
+#& c:/Users/npicc/Documents/python/python.exe c:/Users/npicc/Documents/Coding/projects/weatherDisplay/weatherDisplay.py
         
 
     
@@ -66,3 +74,7 @@ def main():
 if __name__=="__main__":
     main()
 
+"""
+Namespace(coord={'lon': -81.3145, 'lat': 29.8947}, weather=[{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}], 
+base='stations', main={'temp': 286.74, 'feels_like': 286.69, 'temp_min': 285.97, 'temp_max': 287.64, 'pressure': 1015, 'humidity': 97}, visibility=10000, wind={'speed': 1.54, 'deg': 230}, clouds={'all': 100}, dt=1648202781, sys={'type': 1, 'id': 5825, 'country': 'US', 'sunrise': 1648207378, 'sunset': 1648251557}, timezone=-14400, id=4170894, name='Saint Augustine', cod=200)
+"""
