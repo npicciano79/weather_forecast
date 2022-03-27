@@ -7,7 +7,7 @@ from urllib import request, response
 import requests
 import urllib.parse
 import time
-import datetime
+from datetime import datetime
 from datetime import date
 import json
 
@@ -21,13 +21,39 @@ def getLocation():
     lon=response[0]["lon"]
     location=response[0]['display_name']
     loc_info=[lat,lon,location]
-    return loc_info
+    return city,loc_info
 
 #get datetime in unix format
 def getDateTime():
-    presentDate = datetime.datetime.now()
-    unix_datetime = datetime.datetime.timestamp(presentDate)*1000
-    return unix_datetime
+    #get month name, day hour and minute
+    now=datetime.now()
+    monthday=now.strftime("%B %d at %H:%M")
+    #split monthday at return hour
+    hour_min=monthday.split('at ')[1]
+    hour=int(hour_min.split(':')[0])
+    min=hour_min.split(':')[1]
+    print(hour,min)
+
+    """
+    #convert hour from military time
+    setting="PM"
+    if hour>12:
+        hour=hour-12
+    else:
+        setting='AM'
+
+    print(hour,setting)
+    """
+    #concat Month, day hour minute 
+    #month=presentDate.strftime('%B %d at %H:%M')
+    #day=presentDate.strftime('%d')
+    #print(month)
+    #unix_datetime = datetime.datetime.timestamp(presentDate)*1000
+    #return unix_datetime,presentDate
+
+
+
+
 
 def callWeather(loc_info,unix_datetime,key):
     api_add='https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}'.format(loc_info[0],loc_info[1],key)
@@ -36,14 +62,35 @@ def callWeather(loc_info,unix_datetime,key):
     
 
 #need to parse data and display correctly 
-def displayData(raw_data):
+def getData(raw_data):
     data_request=['weather','main']
     data_get=[]
-    #value = Namespace(**raw_data)
-    for key,value in raw_data.items():
-        if key in data_request:
-            input(raw_data[key])
-            
+    count=0
+    value = Namespace(**raw_data)
+    #for key,value in raw_data.items():
+       # if key in data_request:
+    description=str(value.weather).split('description')[1].split(',')[0].replace(':'," ").replace("'",'')
+    #print(value.main)
+    main_key=['temp','feels_like','temp_min','temp_max','humidity']
+    main_data=[]
+    for key,val in value.main.items():
+        if key in main_key:
+            main_data.append(val)
+    
+    return description,main_data
+
+def convertTemp(main_data):
+    
+    for i in range(0,len(main_data)-1):
+        main_data[i]=((main_data[i]-273.15)*9)//5+32
+    
+    return main_data
+
+def displayData(city,description,main_data):
+
+    print("The weather for {} today, ".format(city.title(),   ))
+
+
     
     
 
@@ -60,11 +107,13 @@ def main():
     api_add='https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'
     key='d9f364914229889d68ce44400d7e7c9d'
     
-    loc_info=getLocation()
-    unix_datetime=getDateTime()
-    raw_data=callWeather(loc_info,unix_datetime,key)
-    displayData(raw_data)
-   
+    city,loc_info=getLocation()
+    getDateTime()
+    #print(presentDate)
+    #raw_data=callWeather(loc_info,unix_datetime,key)
+    #description,main_data=getData(raw_data)
+    #main_data=convertTemp(main_data)
+    #displayData(city,description,main_data,unix_datetime)
 
 
 
@@ -74,7 +123,3 @@ def main():
 if __name__=="__main__":
     main()
 
-"""
-Namespace(coord={'lon': -81.3145, 'lat': 29.8947}, weather=[{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}], 
-base='stations', main={'temp': 286.74, 'feels_like': 286.69, 'temp_min': 285.97, 'temp_max': 287.64, 'pressure': 1015, 'humidity': 97}, visibility=10000, wind={'speed': 1.54, 'deg': 230}, clouds={'all': 100}, dt=1648202781, sys={'type': 1, 'id': 5825, 'country': 'US', 'sunrise': 1648207378, 'sunset': 1648251557}, timezone=-14400, id=4170894, name='Saint Augustine', cod=200)
-"""
