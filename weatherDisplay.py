@@ -12,46 +12,43 @@ from datetime import date
 import json
 
 #get lattitude and longitude from town/city
-def getLocation():
-    city=input("Enter your city: ")
+def getLocation(city):
     country = "USA"
     url = "https://nominatim.openstreetmap.org/?addressdetails=1&q=" + city + "+" + country +"&format=json&limit=1"
     response = requests.get(url).json()
-    lat=response[0]["lat"]
-    lon=response[0]["lon"]
-    location=response[0]['display_name']
-    loc_info=[lat,lon,location]
-    return city,loc_info
-
+    if response==[]:
+        city=input("Invalid Entry, please reenter the city name: ")
+        getLocation(city)
+    else:    
+        lat=response[0]["lat"]
+        lon=response[0]["lon"]
+        location=response[0]['display_name']
+        loc_info=[lat,lon,location]
+    return loc_info
+    
 #get datetime in unix format
 def getDateTime():
     #get month name, day hour and minute
-    now=datetime.now()
-    monthday=now.strftime("%B %d at %H:%M")
-    #split monthday at return hour
-    hour_min=monthday.split('at ')[1]
+    now=datetime.now().strftime("%B %d, %H:%M")
+    #split now into monday/day, hour , minute 
+    monthday=now.split(',')[0]
+    hour_min=now.split(', ')[1]
     hour=int(hour_min.split(':')[0])
     min=hour_min.split(':')[1]
-    print(hour,min)
-
-    """
+      
     #convert hour from military time
     setting="PM"
     if hour>12:
         hour=hour-12
     else:
         setting='AM'
-
-    print(hour,setting)
-    """
+   
     #concat Month, day hour minute 
-    #month=presentDate.strftime('%B %d at %H:%M')
-    #day=presentDate.strftime('%d')
-    #print(month)
-    #unix_datetime = datetime.datetime.timestamp(presentDate)*1000
-    #return unix_datetime,presentDate
-
-
+    date_time='{} at {}:{} {}'.format(monthday,str(hour),min,setting)   
+    
+    #calulate unix datetime needed for weather API
+    unix_time=time.time()
+    return unix_time,date_time
 
 
 
@@ -86,9 +83,13 @@ def convertTemp(main_data):
     
     return main_data
 
-def displayData(city,description,main_data):
-
-    print("The weather for {} today, ".format(city.title(),   ))
+def displayData(city,description,main_data,date_time):
+    super='o'
+    current_temp=(f"{main_data[0]}\N{DEGREE SIGN}")
+    min_temp=(f"{main_data[2]}\N{DEGREE SIGN}")
+    max_temp=(f"{main_data[3]}\N{DEGREE SIGN}")
+    print("""The weather for {} today, {} is: \nThere are{}s\nCurrent Temperature:{}\nMinimum Temperature:{}\nMaximum Temperature:{}\nHumidity:{}%"""
+    .format(city.title(),date_time,description,current_temp,min_temp,max_temp,main_data[4]))
 
 
     
@@ -106,14 +107,13 @@ def displayData(city,description,main_data):
 def main():
     api_add='https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'
     key='d9f364914229889d68ce44400d7e7c9d'
-    
-    city,loc_info=getLocation()
-    getDateTime()
-    #print(presentDate)
-    #raw_data=callWeather(loc_info,unix_datetime,key)
-    #description,main_data=getData(raw_data)
-    #main_data=convertTemp(main_data)
-    #displayData(city,description,main_data,unix_datetime)
+    city=input("Enter the city you would like to find the temperature of: ")
+    loc_info=getLocation(city)
+    unix_time,date_time=getDateTime()
+    raw_data=callWeather(loc_info,unix_time,key)
+    description,main_data=getData(raw_data)
+    main_data=convertTemp(main_data)
+    displayData(city,description,main_data,date_time)
 
 
 
