@@ -2,14 +2,28 @@
 #https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={API key}
 
 from argparse import Namespace
-from types import SimpleNamespace
-from urllib import request, response
 import requests
 import urllib.parse
 import time
-from datetime import datetime
-from datetime import date
+from datetime import datetime,date
 import json
+import tkinter as tk 
+
+def mainDisplay():
+    r=tk.Tk()
+    r.geometry('400x400')
+    r.title('Weather Display')
+    text_font=('Helvetica',30,'bold')
+    background='#add8e6'
+
+    r.mainloop()
+
+    
+
+
+
+
+
 
 #get lattitude and longitude from town/city
 def getLocation(city):
@@ -83,13 +97,13 @@ def convertTemp(main_data):
     
     return main_data
 
-def displayData(city,description,main_data,date_time):
+def displayData(city,description,fahern_data,date_time):
     super='o'
-    current_temp=(f"{main_data[0]}\N{DEGREE SIGN}")
-    min_temp=(f"{main_data[2]}\N{DEGREE SIGN}")
-    max_temp=(f"{main_data[3]}\N{DEGREE SIGN}")
+    current_temp=(f"{fahern_data[0]}\N{DEGREE SIGN}")
+    min_temp=(f"{fahern_data[2]}\N{DEGREE SIGN}")
+    max_temp=(f"{fahern_data[3]}\N{DEGREE SIGN}")
     print("""The weather for {} today, {} is: \nThere are{}s\nCurrent Temperature:{}\nMinimum Temperature:{}\nMaximum Temperature:{}\nHumidity:{}%"""
-    .format(city.title(),date_time,description,current_temp,min_temp,max_temp,main_data[4]))
+    .format(city.title(),date_time,description,current_temp,min_temp,max_temp,fahern_data[4]))
 
 
     
@@ -105,21 +119,22 @@ def displayData(city,description,main_data,date_time):
 
 
 def main():
-    api_add='https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'
+    #api_add='https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'
     key='d9f364914229889d68ce44400d7e7c9d'
-    city=input("Enter the city you would like to find the temperature of: ")
-    loc_info=getLocation(city)
-    unix_time,date_time=getDateTime()
-    raw_data=callWeather(loc_info,unix_time,key)
-    description,main_data=getData(raw_data)
-    main_data=convertTemp(main_data)
-    displayData(city,description,main_data,date_time)
+    mainDisplay()
+    #city=input("Enter the city you would like to find the temperature of: ")
+    #loc_info=getLocation(city)
+    #unix_time,date_time=getDateTime()
+    #raw_data=callWeather(loc_info,unix_time,key)
+    #description,main_data=getData(raw_data)
+    #fahern_data=convertTemp(main_data)
+    #displayData(city,description,fahern_data,date_time)
 
 
 
 
 
 
-if __name__=="__main__":
+if __name__=="__main__":    
     main()
 
