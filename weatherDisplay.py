@@ -9,14 +9,43 @@ from datetime import datetime,date
 import json
 import tkinter as tk 
 
-def mainDisplay():
+def mainDisplay(location,description,fahern_data,date_time):
+
+    #set location datetime
+    loc_dateTime='The current forecast for {} on {} is: '.format(location,date_time)
+   
     r=tk.Tk()
     r.geometry('400x400')
     r.title('Weather Display')
     text_font=('Helvetica',30,'bold')
     background='#add8e6'
 
+    #create frames
+    main_frame=tk.Frame(r,bg=background)
+    main_frame.place(relx=0,rely=0,relwidth=1,relheight=1)
+
+    #add labels to frames
+    location_label=tk.Label(main_frame,text=loc_dateTime)
+    location_label.place(relx=0,rely=0,relwidth=1,relheight=0.25)
+
+    currTemp_label=tk.Label(main_frame,text='Current Temp: {}'.format(fahern_data[0]))
+    currTemp_label.place(relx=0,rely=0.25,relwidth=0.5,relheight=0.25)
+
+    dailyLow_label=tk.Label(main_frame,text='Daily low: {}'.format(fahern_data[2]))
+    dailyLow_label.place(relx=0,rely=0.5,relwidth=0.5,relheight=0.25)
+
+    dailyHigh_label=tk.Label(main_frame,text='Daily High: {}'.format(fahern_data[3]))
+    dailyHigh_label.place(relx=0,rely=.75,relwidth=0.5,relheight=0.25)
+
+    forecastIll_label=tk.Label(main_frame,text='#')
+    forecastIll_label.place(relx=0.5,rely=0.25,relwidth=0.5,relheight=0.5)
+
+
     r.mainloop()
+
+    
+
+
 
     
 
@@ -66,7 +95,7 @@ def getDateTime():
 
 
 
-def callWeather(loc_info,unix_datetime,key):
+def callWeather(loc_info,key):
     api_add='https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}'.format(loc_info[0],loc_info[1],key)
     raw_data = requests.get(api_add).json()
     return raw_data
@@ -97,15 +126,15 @@ def convertTemp(main_data):
     
     return main_data
 
-def displayData(city,description,fahern_data,date_time):
+def formatData(fahern_data):
     super='o'
     current_temp=(f"{fahern_data[0]}\N{DEGREE SIGN}")
     min_temp=(f"{fahern_data[2]}\N{DEGREE SIGN}")
     max_temp=(f"{fahern_data[3]}\N{DEGREE SIGN}")
-    print("""The weather for {} today, {} is: \nThere are{}s\nCurrent Temperature:{}\nMinimum Temperature:{}\nMaximum Temperature:{}\nHumidity:{}%"""
-    .format(city.title(),date_time,description,current_temp,min_temp,max_temp,fahern_data[4]))
+    #print("""The weather for {} today, {} is: \nThere are{}s\nCurrent Temperature:{}\nMinimum Temperature:{}\nMaximum Temperature:{}\nHumidity:{}%"""
+    #.format(city.title(),date_time,description,current_temp,min_temp,max_temp,fahern_data[4]))
 
-
+    return current_temp,min_temp,max_temp
     
     
 
@@ -121,15 +150,21 @@ def displayData(city,description,fahern_data,date_time):
 def main():
     #api_add='https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'
     key='d9f364914229889d68ce44400d7e7c9d'
-    mainDisplay()
+    location='St. Augustine, Florida'
+    loc_info=['29.8946952', '-81.3145395']
+    #get location and longitute/latitude
     #city=input("Enter the city you would like to find the temperature of: ")
-    #loc_info=getLocation(city)
-    #unix_time,date_time=getDateTime()
-    #raw_data=callWeather(loc_info,unix_time,key)
-    #description,main_data=getData(raw_data)
-    #fahern_data=convertTemp(main_data)
-    #displayData(city,description,fahern_data,date_time)
+    #loc_info=getLocation('st augustine')
+    
+    #get current datetime
+    unix_time,date_time=getDateTime()
 
+    #call weatherAPI, passes loc_info, time/date,key
+    raw_data=callWeather(loc_info,key)
+    description,main_data=getData(raw_data)
+    fahern_data=convertTemp(main_data)
+    current_temp,min_temp,max_temp=formatData(fahern_data)
+    mainDisplay(location,description,fahern_data,date_time)
 
 
 
