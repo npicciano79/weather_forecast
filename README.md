@@ -15,4 +15,7 @@ fahernite temp, description, city, and date time are passed to display data whic
 
 throws errors at special characters and numbers, need to fix
 
-
+icons found at https://www.iconfinder.com/weather-icons?price=free
+sunny: https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_3-256.png
+partial clouds https://www.iconfinder.com/icons/1530391/weather_clouds_sun_sunny_icon
+rain https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_6-256.png

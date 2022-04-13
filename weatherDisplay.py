@@ -2,22 +2,32 @@
 #https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={API key}
 
 from argparse import Namespace
+from math import degrees
+from numpy import imag, size
 import requests
 import urllib.parse
 import time
 from datetime import datetime,date
 import json
 import tkinter as tk 
+from PIL import ImageTk,Image
 
 def mainDisplay(location,description,fahern_data,date_time):
 
     #set location datetime
-    loc_dateTime='The current forecast for {} on {} is: '.format(location,date_time)
+    loc_dateTime='The current forecast for \n{} on {} is:'.format(location,date_time)
+
+    #set description image
+    #description_image={'  clear sky':r'C:\Users\npicc\Documents\Coding\projects\weatherDisplay\sunny.png','overcast clouds':'icon/partialcloud'}
+    
+    #tkimage=ImageTk.PhotoImage(img)
+    
    
     r=tk.Tk()
     r.geometry('400x400')
     r.title('Weather Display')
-    text_font=('Helvetica',30,'bold')
+    text_font=('Helvetica',20,'bold')
+    title_font=('Helvetica',15,'bold')
     background='#add8e6'
 
     #create frames
@@ -25,34 +35,27 @@ def mainDisplay(location,description,fahern_data,date_time):
     main_frame.place(relx=0,rely=0,relwidth=1,relheight=1)
 
     #add labels to frames
-    location_label=tk.Label(main_frame,text=loc_dateTime)
+    location_label=tk.Label(main_frame,text=loc_dateTime,font=title_font)
     location_label.place(relx=0,rely=0,relwidth=1,relheight=0.25)
 
-    currTemp_label=tk.Label(main_frame,text='Current Temp: {}'.format(fahern_data[0]))
+    currTemp_label=tk.Label(main_frame,text='Current Temp: \n{}\N{DEGREE SIGN}'.format(fahern_data[0]),font=text_font)
     currTemp_label.place(relx=0,rely=0.25,relwidth=0.5,relheight=0.25)
 
-    dailyLow_label=tk.Label(main_frame,text='Daily low: {}'.format(fahern_data[2]))
+    dailyLow_label=tk.Label(main_frame,text='Daily low: \n{}\N{DEGREE SIGN}'.format(fahern_data[2]),font=text_font)
     dailyLow_label.place(relx=0,rely=0.5,relwidth=0.5,relheight=0.25)
 
-    dailyHigh_label=tk.Label(main_frame,text='Daily High: {}'.format(fahern_data[3]))
+    dailyHigh_label=tk.Label(main_frame,text='Daily High: \n{}\N{DEGREE SIGN}'.format(fahern_data[3]),font=text_font)
     dailyHigh_label.place(relx=0,rely=.75,relwidth=0.5,relheight=0.25)
 
-    forecastIll_label=tk.Label(main_frame,text='#')
+    img=tk.PhotoImage(file="C://Users//npicc//Documents//Coding//projects//weatherDisplay//sunny.png")
+    img=img.res
+    forecastIll_label=tk.Label(main_frame,image=img)
     forecastIll_label.place(relx=0.5,rely=0.25,relwidth=0.5,relheight=0.5)
 
 
     r.mainloop()
 
     
-
-
-
-    
-
-
-
-
-
 
 #get lattitude and longitude from town/city
 def getLocation(city):
@@ -97,6 +100,7 @@ def getDateTime():
 
 def callWeather(loc_info,key):
     api_add='https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}'.format(loc_info[0],loc_info[1],key)
+    print(api_add)
     raw_data = requests.get(api_add).json()
     return raw_data
     
