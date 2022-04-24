@@ -14,15 +14,15 @@ from PIL import ImageTk,Image
 
 def mainDisplay(location,description,fahern_data,date_time):
 
+    print(description)
+    
     #set location datetime
     loc_dateTime='The current forecast for \n{} on {} is:'.format(location,date_time)
 
     #set description image
-    #description_image={'  clear sky':r'C:\Users\npicc\Documents\Coding\projects\weatherDisplay\sunny.png','overcast clouds':'icon/partialcloud'}
-    
-    #tkimage=ImageTk.PhotoImage(img)
-    
-   
+    description_image={'  clear sky':"C://Users//npicc//Documents//Coding//projects//weatherDisplay//icons//sunny.png",'overcast clouds':"C://Users//npicc//Documents//Coding//projects//weatherDisplay//icons//partalcloud.png",'  few clouds':"C://Users//npicc//Documents//Coding//projects//weatherDisplay//icons//partalcloud.png"}
+    description_link=description_image[description]
+
     r=tk.Tk()
     r.geometry('400x400')
     r.title('Weather Display')
@@ -30,7 +30,7 @@ def mainDisplay(location,description,fahern_data,date_time):
     title_font=('Helvetica',15,'bold')
     background='#add8e6'
 
-    #create frames
+    #create main frame
     main_frame=tk.Frame(r,bg=background)
     main_frame.place(relx=0,rely=0,relwidth=1,relheight=1)
 
@@ -47,14 +47,21 @@ def mainDisplay(location,description,fahern_data,date_time):
     dailyHigh_label=tk.Label(main_frame,text='Daily High: \n{}\N{DEGREE SIGN}'.format(fahern_data[3]),font=text_font)
     dailyHigh_label.place(relx=0,rely=.75,relwidth=0.5,relheight=0.25)
 
-    img=tk.PhotoImage(file="C://Users//npicc//Documents//Coding//projects//weatherDisplay//sunny.png")
-    img=img.res
-    forecastIll_label=tk.Label(main_frame,image=img)
-    forecastIll_label.place(relx=0.5,rely=0.25,relwidth=0.5,relheight=0.5)
+    forecast_descript_label=tk.Label(main_frame,text=description,font=text_font)
+    forecast_descript_label.place(relx=0.5,rely=0.25,relwidth=0.5,relheight=0.15)
+    #open image
+    
+    img=Image.open(description_link)
+    #resized image
+    resize_img=img.resize((150,150),Image.ANTIALIAS)
+    #img=tk.PhotoImage(file="C://Users//npicc//Documents//Coding//projects//weatherDisplay//sunny.png")
+    new_img=ImageTk.PhotoImage(resize_img)
+    forecastIll_label=tk.Label(main_frame,image=new_img)
+    forecastIll_label.place(relx=0.5,rely=0.4,relwidth=0.5,relheight=0.6)
 
-
+    
     r.mainloop()
-
+    
     
 
 #get lattitude and longitude from town/city
